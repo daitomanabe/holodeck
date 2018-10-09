@@ -1,86 +1,145 @@
-Holodeck is a high fidelity simulator for reinforcement learning built in the Unreal Engine.
-These bindings provide a simple interface for communicating with prebuilt environments.
-Currently only support Python3 in Windows and Linux.
+# Holodeck
 
+[![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
-# Prerequisites
-* Python3
-* The following packages: `pip3 install numpy gym`
-* Platform specific dependencies below
-* About 3gb hard drive space (around 5gb needed during installation)
+Holodeck is a high-fidelity simulator for reinforcement learning built on top of Unreal Engine 4.
+[Read the docs.](https://holodeck.readthedocs.io)
 
-### Linux
-* Posix ipc: `pip3 install posix_ipc`
-* OpenGL3 or 4
-
-### Windows
-* pywin32: `pip3 install pywin32`
-
-# Installation
-* Clone the repository `git clone https://github.com/byu-pccl/HolodeckPythonBinding`
-* Run the Python install script `python3 install.py`
-* Add the HOLODECKPATH environment variable (see below)
-* Add the HOLODECKPATH to your PYTHONPATH (see below)
-* `source .bashrc` or open a new terminal
-* Verify installation by opening python3 in terminal and running:
+Citation:
 ```
-from Holodeck import Holodeck
-env = Holodeck.make("MazeWorld")
+@misc{HolodeckPCCL,
+  Author = {Joshua Greaves and Max Robinson and Nick Walton and Mitchell Mortensen and Robert Pottorff and Connor Christopherson and Derek Hancock and David Wingate},
+  Title = {Holodeck: A High Fidelity Simulator},
+  Year = {2018},
+}
 ```
-If the world loads up then installation was successful
 
-## Adding Environment Variables
-### Linux
-Add these lines to the end of your bashrc file:
+## Installation
+### Requirements
+Windows and Linux:
+* Python 3.5 or higher
+* Pip3
+* At least 3gb storage
+
+Linux:
+* OpenGL version 3 or higher
+
+### Pip Installation
+To install the python bindings, simply run
+`pip3 install holodeck`
+
+Note: for some versions of pip you may see a warning, but holodeck will be installed anyway.
+
+### Docker Installation
+For Ubuntu 16.04 and Cuda 9.0*:
+1. Install [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)).
+2. Pull the docker repository and run it. (replace "*without*" with "*with*" to install with the `DefaultWorlds` package)
+3. Holodeck cannot be run with root privileges so after entering the container and before you use holodeck you must login to a normal user. The `holodeckuser` with password `"holodeck"` has been provided. This account must be used if the `with-worlds` version is selected.
 ```
-export HOLODECKPATH="/usr/local/Holodeck"
-export PYTHONPATH="${HOLODECKPATH}:${PYTHONPATH}"
+docker pull pccl/holodeck:ubuntu16.04-without-worlds
+docker run -it pccl/holodeck:ubuntu16.04-without-worlds
 ```
-If you didn't install at the default location, make sure to change it to the correct path.
 
-### Windows
-Press the windows button and start typing "environment variables". Click "Edit the system environment variables".
-Press the Environment Variables button.
-Under the System variables section, click "New".
-VariableName = HOLODECKPATH
-VariableValue = your path to holodeck (default: C:\Users\user_name\AppData\Local\Holodeck)
+*For versions other than Ubuntu 16.04 and Cuda 9.0 see [here.](https://hub.docker.com/r/pccl/holodeck/).
 
-Then, click on the PYTHONPATH variable, and add the Holodeck root directory to it.
-(If the PYTHONPATH variable isn't there, you should create it).
+### Installing Packages
+Holodeck currently contains one package, the `DefaultWorlds` package.
+Each package in turn contains a number of worlds.
+Holodeck has an internal package manager for handling packages.
+The most important commands for managing these are as follows:
+```
+import holodeck
+print(holodeck.all_packages())                 # View all packages that are available to be downloaded.
+print(holodeck.installed_packages())           # View which packages are currently installed.
+holodeck.install('DefaultWorlds')              # Installs the DefaultWorlds package.
+print(holodeck.package_info('DefaultWorlds'))  # View information on what worlds this package
+                                               # contains, and what agents are in those worlds.
+holodeck.remove('DefaultWorlds')               # Removes a package.
+```
+You only need to install packages once. You should make sure to remove them with
+`holodeck.remove(package_name)` or `holodeck.remove_all_packages()` before removing
+holodeck with pip.
 
-# Usage
-The quickest way to get acquainted with basic Holodeck use is to view the example.py file.
-
-The Holodeck instance is designed in the same vein as OpenAI's Gym.
-All you need is to import Holodeck `from Holodeck import Holodeck` and then create an environment with the make command:
-`env = Holodeck.make('MazeWorld')`.
-
-The current world list is `MazeWorld`, `UrbanCity`, `EuropeanForest`, and `RedwoodForest`.
-
-Each environment contains an agent, and each agent has a specific number of sensors.
-The default worlds currently contain 2 supported agents:
-* UAV - A quad-copter which takes as input target values for roll, pitch, yaw rate, and altitude.
-* DiscreteSphere - A basic robot that moves on a plane, with four moves: forward, backward, left, and right.
-
-UAV WORLDS
-* UrbanCity
-* EuropeanForest
-* RedwoodForest
-
-SPHERE ROBOT WORLDS
-* MazeWorld
-
-To interact with the environment, you simply call `env.step(cmd)` where cmd is a command for the specific agent.
-Each agent has a different action space, which are detailed [here](https://github.com/BYU-PCCL/Holodeck/blob/develop/docs/agents.md).
-The step function returns a tuple of `(state, reward, terminal, info)`.
+## Basic Usage
+Holodeck's interface is designed in the same vein as [OpenAI's Gym](https://gym.openai.com/).
+The quickest way to get acquainted with Holodeck use is to view the example.py file.
+Here is a basic walkthrough of an example that runs a Holodeck world:
+```
+import holodeck
+import numpy as np
+env = holodeck.make("UrbanCity")    # Load the environment. This environment contains a UAV in a city.
+command = np.array([0, 0, 0, 100])  # The UAV takes 3 torques and a thrust as a command.
+for i in range(30):
+    state, reward, terminal, info = env.step(command)  # Pass the command to the environment with step.
+                                                       # This returns the state, reward, terminal and info tuple.
+```
 The state is a dictionary of sensor enum to sensor value.
-Reward is the reward received from the previous action, and terminal indicates whether the current state is a terminal state.
+Reward is the reward received from the previous action, and terminal indicates whether the current
+state is a terminal state.
 Info contains additional environment specific information.
 
-The sensors for each agent are also indicated [here](https://github.com/BYU-PCCL/Holodeck/blob/develop/docs/sensors.md)
+If you want to access the data of a specific sensor, it is as simple as import Sensors and
+retrieving the correct value from the state dictionary:
+
+```
+from holodeck.sensors import Sensors
+print(state[Sensors.LOCATION_SENSOR])
+```
+
+## Control Schemes
+Holodeck supports different control schemes for different agents.
+Currently the only agent with multiple control schemes is the UAV agent.
+The control scheme can be switched as follows:
+```
+from holodeck.agents import ControlSchemes
+
+env.set_control_scheme('uav0', ControlSchemes.UAV_ROLL_PITCH_YAW_RATE_ALT)
+```
+For more control schemes, check out the [docs](https://holodeck.readthedocs.io/en/latest/holodeck/agents.html)
+
+## Multi Agent-Environments
+Holodeck supports multi-agent environments. The interface is a little different, but still very easy to use.
+Instead of calling `step` which passes a command to the main agent and ticks the game, you should call `act`.
+`act` supplies a command to a specific agent, but doesn't tick the game.
+Once all agents have received their actions, you can call `tick` to tick the game.
+After act, every time you call tick the same command will be supplied to the agent.
+To change the command, just call act again.
+```
+env = holodeck.make('CyberPunkCity')
+env.reset()
+
+env.act('uav0', np.array([0, 0, 0, 100]))
+env.act('nav0', np.array([0, 0, 0]))
+for i in range(300):
+    s = env.tick()
+```
+The state returned from tick is also somewhat different.
+The state is now a dictionary from agent name to sensor dictionary.
+You can access the reward, terminal and location for the UAV as follows:
+```
+s['uav0'][Sensors.REWARD]
+s['uav0'][Sensors.TERMINAL]
+s['uav0'][Sensors.LOCATION_SENSOR]
+```
+
+## Basic Controls
+### HotKeys 
+* `C` - toggles between a directly attached camera, which allows you to see more or less what the agent sees, and relative attach, 
+which is the default camera attachment.
+* `V` - toggles spectator mode, which allows you detach from the agent and explore the world without affecting the agent's vision.  
+### Stats
+You can view stats by entering console commands. When an environment is running, type `~` to open the console and enter a command. A common one to use is `stat FPS` to display the frames per second. More commands can be found in [UDK documentation](https://api.unrealengine.com/udk/Three/ConsoleCommands.html).
+
+
+## Documentation
+* [Agents](https://github.com/byu-pccl/holodeck/blob/master/docs/agents.md)
+* [Sensors](https://github.com/byu-pccl/holodeck/blob/master/docs/sensors.md)
+* [Environment configuration](https://github.com/byu-pccl/holodeck/blob/master/docs/worlds.md)
+* [Docs](https://holodeck.readthedocs.io/en/latest/)
+
 
 ## Custom World Creation
-To create custom worlds with variable start positions, number and type of agents, and different environments see [Using Custom Worlds](https://github.com/BYU-PCCL/HolodeckPythonBinding/wiki/Using-Custom-Worlds) on the wiki for details on compiling Holodeck and editing worlds with the Unreal editor.
+To create custom worlds with variable start positions, number and type of agents, and different environments see the [Holodeck Engine](https://github.com/byu-pccl/holodeck-engine) and follow the [Packaging and Using Custom Worlds wiki](https://github.com/byu-pccl/holodeck-engine/wiki/Packaging-and-Using-Custom-Worlds) to use Holodeck for editing worlds with the Unreal editor.
 
 ## Using OpenGL3 in Linux
 To use OpenGL3 in linux, change the argument in Holodeck.make:
@@ -88,3 +147,6 @@ To use OpenGL3 in linux, change the argument in Holodeck.make:
 from Holodeck import Holodeck
 env = Holodeck.make("MazeWorld", Holodeck.GL_VERSION.OPENGL3)
 ```
+
+## Running Holodeck on Headless Machines
+Holodeck can run on headless machines with GPU accelerated rendering. This requires no extra configuration. Holodeck will automatically detect that the machine is headless and configure it's rendering process accordingly. 
