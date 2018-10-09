@@ -1,6 +1,6 @@
 # Holodeck
 
-![Alt Text](https://holodeck.cs.byu.edu/gifs/cyber_straight.gif)
+![Alt Text](exampleworld.gif)
 
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
