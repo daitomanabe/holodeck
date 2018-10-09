@@ -1,7 +1,5 @@
 # Holodeck
 
-<img src="holodecklogo.png" width="312" height="312"> <img src="exampleworld.gif" width="512" height="312"> 
-
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
 Holodeck is a high-fidelity simulator for reinforcement learning built on top of Unreal Engine 4.
