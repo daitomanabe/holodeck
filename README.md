@@ -1,6 +1,6 @@
 # Holodeck
 
-![Alt Text](exampleworld.gif)
+![Alt Text](exampleworld.gif =312x256)
 
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
