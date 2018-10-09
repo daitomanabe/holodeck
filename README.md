@@ -1,18 +1,11 @@
 # Holodeck
 
+![Alt Text](https://holodeck.cs.byu.edu/gifs/cyber_straight.gif)
+
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
 Holodeck is a high-fidelity simulator for reinforcement learning built on top of Unreal Engine 4.
 [Read the docs.](https://holodeck.readthedocs.io)
-
-Citation:
-```
-@misc{HolodeckPCCL,
-  Author = {Joshua Greaves and Max Robinson and Nick Walton and Mitchell Mortensen and Robert Pottorff and Connor Christopherson and Derek Hancock and David Wingate},
-  Title = {Holodeck: A High Fidelity Simulator},
-  Year = {2018},
-}
-```
 
 ## Installation
 ### Requirements
@@ -150,3 +143,12 @@ env = Holodeck.make("MazeWorld", Holodeck.GL_VERSION.OPENGL3)
 
 ## Running Holodeck on Headless Machines
 Holodeck can run on headless machines with GPU accelerated rendering. This requires no extra configuration. Holodeck will automatically detect that the machine is headless and configure it's rendering process accordingly. 
+
+Citation:
+```
+@misc{HolodeckPCCL,
+  Author = {Joshua Greaves and Max Robinson and Nick Walton and Mitchell Mortensen and Robert Pottorff and Connor Christopherson and Derek Hancock and David Wingate},
+  Title = {Holodeck: A High Fidelity Simulator},
+  Year = {2018},
+}
+```
