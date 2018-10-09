@@ -1,8 +1,6 @@
 # Holodeck
 
-![](holodecklogo.png)
-
-<img src="exampleworld.gif" width="312" height="256">
+<img src="holodeck.png" width="256" height="256"> <img src="exampleworld.gif" width="256" height="256">
 
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
