@@ -1,6 +1,6 @@
 # Holodeck
 
-<img src="holodecklogo.png" width="256" height="256"> <img src="exampleworld.gif" width="256" height="256"> 
+<img src="holodecklogo.png" width="256" height="256"> <img src="exampleworld.gif" width="512" height="312"> 
 
 [![Read the docs badge](https://readthedocs.org/projects/holodeck/badge/)](https://holodeck.readthedocs.io)
 
